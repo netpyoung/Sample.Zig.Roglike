@@ -1,0 +1,8 @@
+/SDL3_lib/
+/libtcod/
+int/
+out/
+zig-out/
+.zig-cache/
+.vs/
+.idea/
