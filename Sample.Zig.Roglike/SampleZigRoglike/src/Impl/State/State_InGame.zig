@@ -63,7 +63,7 @@ pub fn Render(_: *const State_InGame, game: *Game) void {
         if (game.map.arr_visible[idx]) {
             m.Render(&game.tcod.console);
         }
-        m.Render(&game.tcod.console);
+        // m.Render(&game.tcod.console); // debug item location
     }
 
     game.player.Render(&game.tcod.console);
