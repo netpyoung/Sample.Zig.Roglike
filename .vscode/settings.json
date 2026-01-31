@@ -1,0 +1,17 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/.vs": true,
+        "**/.idea": true,
+        "**/.zig-cache": true,
+        "**/zig-out": true,
+        "**/int": true,
+        "**/out": true,
+        "libtcod": true,
+        "SDL3_lib": true,
+    }
+}
