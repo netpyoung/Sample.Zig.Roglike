@@ -1,4 +1,5 @@
 /SDL3_lib/
+/SDL3_temp/
 /libtcod/
 int/
 out/
