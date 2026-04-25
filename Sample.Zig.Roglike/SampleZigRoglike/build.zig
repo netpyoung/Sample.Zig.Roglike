@@ -8,10 +8,14 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
-    const exe = b.addExecutable(.{
-        .name = "SampleZigRoglike",
-        .root_module = root_module,
+
+    const translate_c = b.addTranslateC(.{
+        .root_source_file = b.path("src/c.h"),
+        .target = target,
+        .optimize = optimize,
     });
+
+    const c_module = translate_c.createModule();
 
     if (target.result.os.tag == .windows) {
         {
@@ -24,18 +28,18 @@ pub fn build(b: *std.Build) void {
 
             {
                 const sdl_path = b.path("../../SDL3_lib/SDL3/");
-                exe.root_module.addIncludePath(sdl_path.join(b.allocator, "include") catch unreachable);
-                exe.root_module.addLibraryPath(sdl_path.join(b.allocator, "lib/x64") catch unreachable);
+                translate_c.addIncludePath(sdl_path.join(b.allocator, "include") catch unreachable);
+                c_module.addLibraryPath(sdl_path.join(b.allocator, "lib/x64") catch unreachable);
                 const bin = sdl_path.join(b.allocator, "lib/x64/SDL3.dll") catch unreachable;
                 b.installBinFile(bin.src_path.sub_path, "SDL3.dll");
-                exe.root_module.linkSystemLibrary("SDL3", dynamic_link_opts);
+                c_module.linkSystemLibrary("SDL3", dynamic_link_opts);
             }
 
             {
                 const tcod_path = b.path("../../libtcod/");
-                exe.root_module.addIncludePath(tcod_path.join(b.allocator, "include") catch unreachable);
-                exe.root_module.addLibraryPath(tcod_path.join(b.allocator, "lib") catch unreachable);
-                exe.root_module.linkSystemLibrary("libtcod", dynamic_link_opts);
+                translate_c.addIncludePath(tcod_path.join(b.allocator, "include") catch unreachable);
+                c_module.addLibraryPath(tcod_path.join(b.allocator, "lib") catch unreachable);
+                c_module.linkSystemLibrary("libtcod", dynamic_link_opts);
 
                 b.installBinFile("../../libtcod/bin/libtcod.dll", "libtcod.dll");
                 //b.installBinFile("../../libtcod/bin/SDL3.dll", "SDL3.dll");
@@ -49,7 +53,14 @@ pub fn build(b: *std.Build) void {
         }
     }
 
-    exe.linkLibC();
+    root_module.addImport("c", c_module);
+    root_module.link_libc = true;
+
+    const exe = b.addExecutable(.{
+        .name = "SampleZigRoglike",
+        .root_module = root_module,
+    });
+
     b.installArtifact(exe);
 
     const run_cmd = b.addRunArtifact(exe);
