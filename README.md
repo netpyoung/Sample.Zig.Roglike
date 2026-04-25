@@ -6,7 +6,7 @@ This project is a small Roglike implementation for learning Zig while keeping up
 
 ``` cmd
 > zig version
-0.15.2
+0.16.0
 ```
 
 ## rogueliketutorials
