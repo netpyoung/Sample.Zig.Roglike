@@ -271,6 +271,9 @@
     <Compile Include="src\Impl\SeedRandom.zig">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="src\Impl\segmented_list.zig">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="src\Impl\Selection\Selection.zig">
       <SubType>Code</SubType>
     </Compile>

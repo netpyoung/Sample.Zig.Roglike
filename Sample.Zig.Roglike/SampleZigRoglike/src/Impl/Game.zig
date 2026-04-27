@@ -1,4 +1,5 @@
 const std = @import("std");
+const segmented_list = @import("segmented_list.zig");
 const builtin = @import("builtin");
 const StateMachine = @import("State/StateMachine.zig");
 
@@ -29,7 +30,7 @@ sm: StateMachine,
 map: Map,
 messageLog: MessageLog,
 player: Player,
-monsters: std.SegmentedList(Monster, 32),
+monsters: segmented_list.SegmentedList(Monster, 32),
 items: std.ArrayList(Item),
 popup: Popup,
 selection: Selection,
@@ -431,7 +432,7 @@ fn _PlaceItems(self: *Game) void {
 // ===============================================================================
 // ===============================================================================
 
-var gpa_instance = std.heap.GeneralPurposeAllocator(.{
+var alloc_instance = std.heap.DebugAllocator(.{
     .thread_safe = true,
     // .never_unmap = true,
     // .retain_metadata = true,
@@ -440,7 +441,7 @@ var gpa_instance = std.heap.GeneralPurposeAllocator(.{
 
 fn init_allocator() std.mem.Allocator {
     if (builtin.mode == .Debug or builtin.mode == .ReleaseSafe) {
-        return gpa_instance.allocator();
+        return alloc_instance.allocator();
     } else {
         return std.heap.page_allocator;
     }
@@ -448,7 +449,7 @@ fn init_allocator() std.mem.Allocator {
 
 fn deinit_allocator() void {
     if (builtin.mode == .Debug or builtin.mode == .ReleaseSafe) {
-        const leaked = gpa_instance.deinit();
+        const leaked = alloc_instance.deinit();
         if (leaked == .leak) {
             std.debug.print("\nMemory leak detected!\n", .{});
             @breakpoint();
